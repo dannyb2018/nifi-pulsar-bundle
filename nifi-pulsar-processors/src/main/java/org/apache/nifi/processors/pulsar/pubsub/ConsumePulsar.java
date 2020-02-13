@@ -125,14 +125,14 @@ public class ConsumePulsar extends AbstractPulsarConsumerProcessor<byte[]> {
     }
 
     private void consume(Consumer<byte[]> consumer, ProcessContext context, ProcessSession session) throws PulsarClientException {
- 
+
         try {
             final int maxMessages = context.getProperty(CONSUMER_BATCH_SIZE).isSet() ? context.getProperty(CONSUMER_BATCH_SIZE)
                     .evaluateAttributeExpressions().asInteger() : Integer.MAX_VALUE;
 
             final byte[] demarcatorBytes = context.getProperty(MESSAGE_DEMARCATOR).isSet() ? context.getProperty(MESSAGE_DEMARCATOR)
                     .evaluateAttributeExpressions().getValue().getBytes(StandardCharsets.UTF_8) : null;
-            
+
             // Cumulative acks are NOT permitted on Shared subscriptions.
             final boolean shared = context.getProperty(SUBSCRIPTION_TYPE).getValue()
                     .equalsIgnoreCase(SHARED.getValue());
@@ -148,9 +148,9 @@ public class ConsumePulsar extends AbstractPulsarConsumerProcessor<byte[]> {
                 try {
                     lastMsg = msg;
                     loopCounter.incrementAndGet();
-                    
+
                     if (shared) {
-                    	consumer.acknowledge(msg);
+                      consumer.acknowledge(msg);
                     }
 
                     // Skip empty messages, as they cause NPE's when we write them to the OutputStream
@@ -170,7 +170,7 @@ public class ConsumePulsar extends AbstractPulsarConsumerProcessor<byte[]> {
                   return;
                 }
             }
-            
+
             IOUtils.closeQuietly(out);
 
             if (!shared && lastMsg != null)  {
@@ -189,7 +189,7 @@ public class ConsumePulsar extends AbstractPulsarConsumerProcessor<byte[]> {
             }
 
         } catch (PulsarClientException e) {
-        	getLogger().error("Error communicating with Apache Pulsar", e);
+            getLogger().error("Error communicating with Apache Pulsar", e);
             context.yield();
             session.rollback();
         }

@@ -57,7 +57,8 @@ public class MockRecordWriter extends AbstractControllerService implements Recor
     }
 
     @Override
-    public RecordSetWriter createWriter(final ComponentLog logger, final RecordSchema schema, final OutputStream out) {
+    public RecordSetWriter createWriter(ComponentLog logger, RecordSchema schema, OutputStream out,
+               Map<String, String> args) throws SchemaNotFoundException, IOException {
         return new RecordSetWriter() {
 
             private int recordCount = 0;
@@ -152,4 +153,5 @@ public class MockRecordWriter extends AbstractControllerService implements Recor
             }
         };
     }
+
 }

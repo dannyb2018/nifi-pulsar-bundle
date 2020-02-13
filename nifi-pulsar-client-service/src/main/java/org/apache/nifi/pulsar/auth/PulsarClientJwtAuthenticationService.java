@@ -45,24 +45,23 @@ public class PulsarClientJwtAuthenticationService extends AbstractPulsarClientAu
             .required(true)
             .sensitive(true)
             .build();
-    
+
     private static final List<PropertyDescriptor> properties;
-    
+
     static {
         List<PropertyDescriptor> props = new ArrayList<>();
         props.add(TRUST_CERTIFICATE);
         props.add(JWT_TOKEN);
         properties = Collections.unmodifiableList(props);
     }
-    
+
     @Override
     protected List<PropertyDescriptor> getSupportedPropertyDescriptors() {
         return properties;
     }
 
     @Override
-	public Authentication getAuthentication() {
-    	return AuthenticationFactory.token(configContext.getProperty(JWT_TOKEN).getValue());
-	}
-
+    public Authentication getAuthentication() {
+       return AuthenticationFactory.token(configContext.getProperty(JWT_TOKEN).getValue());
+    }
 }

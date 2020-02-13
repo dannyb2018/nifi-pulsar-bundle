@@ -43,8 +43,8 @@ public class PulsarClientTlsAuthenticationService extends AbstractPulsarClientAu
             .addValidator(createFileExistsAndReadableValidator())
             .sensitive(false)
             .build();
-	
-	// client role key
+
+    // client role key
     public static final PropertyDescriptor CLIENT_KEY = new PropertyDescriptor.Builder()
             .name("Client Key")
             .description("The fully-qualified filename of the client private key.")
@@ -52,9 +52,9 @@ public class PulsarClientTlsAuthenticationService extends AbstractPulsarClientAu
             .addValidator(createFileExistsAndReadableValidator())
             .sensitive(false)
             .build();
-	
+
     private static final List<PropertyDescriptor> properties;
-    
+
     static {
         List<PropertyDescriptor> props = new ArrayList<>();
         props.add(TRUST_CERTIFICATE);
@@ -62,23 +62,22 @@ public class PulsarClientTlsAuthenticationService extends AbstractPulsarClientAu
         props.add(CLIENT_KEY);
         properties = Collections.unmodifiableList(props);
     }
-    
+
     @Override
     protected List<PropertyDescriptor> getSupportedPropertyDescriptors() {
         return properties;
     }
-	
+
     @Override
-	public Authentication getAuthentication() {
-		Map<String, String> authParams = new HashMap<>();
+    public Authentication getAuthentication() {
+        Map<String, String> authParams = new HashMap<>();
         authParams.put("tlsCertFile", configContext.getProperty(CLIENT_CERTIFICATE).getValue());
         authParams.put("tlsKeyFile", configContext.getProperty(CLIENT_KEY).getValue());
         try {
-			return AuthenticationFactory.create(AuthenticationTls.class.getName(), authParams);
-		} catch (UnsupportedAuthenticationException e) {
-			getLogger().error("Unable to authenticate", e);
-			return null;
-		}
-	}
-
+          return AuthenticationFactory.create(AuthenticationTls.class.getName(), authParams);
+        } catch (UnsupportedAuthenticationException e) {
+          getLogger().error("Unable to authenticate", e);
+          return null;
+        }
+    }
 }

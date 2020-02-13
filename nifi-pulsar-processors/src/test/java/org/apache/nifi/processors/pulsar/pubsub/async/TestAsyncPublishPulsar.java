@@ -81,7 +81,7 @@ public class TestAsyncPublishPulsar extends TestPublishPulsar {
     @Test
     public void pulsarClientExceptionTest() throws UnsupportedEncodingException {
 
-        when(mockClientService.getMockProducer().sendAsync(any(byte[].class))).thenThrow(PulsarClientException.class);
+        when(mockClientService.getMockProducer().sendAsync(any(byte[].class))).thenThrow(RuntimeException.class);
         when(mockClientService.getMockProducer().getTopic()).thenReturn("my-topic");
 
         runner.setProperty(PublishPulsar.TOPIC, "my-topic");

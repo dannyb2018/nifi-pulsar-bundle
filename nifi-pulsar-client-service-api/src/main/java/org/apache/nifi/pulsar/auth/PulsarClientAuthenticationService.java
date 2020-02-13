@@ -26,7 +26,7 @@ import org.apache.pulsar.client.api.Authentication;
         + "secured Apache Pulsar broker endpoint.")
 public interface PulsarClientAuthenticationService extends ControllerService {
 
-	public String getTlsTrustCertsFilePath();
-	
-	public Authentication getAuthentication();
+    public String getTlsTrustCertsFilePath();
+
+    public Authentication getAuthentication();
 }

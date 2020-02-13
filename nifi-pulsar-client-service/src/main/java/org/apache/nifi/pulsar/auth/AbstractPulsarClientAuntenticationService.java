@@ -29,8 +29,8 @@ import org.apache.nifi.reporting.InitializationException;
 import org.apache.pulsar.client.api.Authentication;
 
 public abstract class AbstractPulsarClientAuntenticationService extends AbstractControllerService
-		implements PulsarClientAuthenticationService {
-	
+     implements PulsarClientAuthenticationService {
+
     public static final PropertyDescriptor TRUST_CERTIFICATE = new PropertyDescriptor.Builder()
             .name("Trusted Certificate Filename")
             .description("The fully-qualified filename of the Trusted certificate.")
@@ -38,20 +38,20 @@ public abstract class AbstractPulsarClientAuntenticationService extends Abstract
             .addValidator(createFileExistsAndReadableValidator())
             .sensitive(false)
             .build();
-    
+
     protected ConfigurationContext configContext;
-    
+
     @OnEnabled
     public void onConfigured(final ConfigurationContext context) throws InitializationException {
         configContext = context;
     }
 
-	@Override
-	public String getTlsTrustCertsFilePath() {
-		return configContext.getProperty(TRUST_CERTIFICATE).getValue();
-	}
+    @Override
+    public String getTlsTrustCertsFilePath() {
+       return configContext.getProperty(TRUST_CERTIFICATE).getValue();
+    }
 
-	public abstract Authentication getAuthentication();
+    public abstract Authentication getAuthentication();
 
     protected static Validator createFileExistsAndReadableValidator() {
         return new Validator() {

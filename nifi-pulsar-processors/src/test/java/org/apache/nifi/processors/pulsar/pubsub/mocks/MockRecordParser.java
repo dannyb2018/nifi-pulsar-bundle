@@ -61,7 +61,8 @@ public class MockRecordParser extends AbstractControllerService implements Recor
     }
 
     @Override
-    public RecordReader createRecordReader(Map<String, String> variables, InputStream in, ComponentLog logger) throws IOException, SchemaNotFoundException {
+    public RecordReader createRecordReader(Map<String, String> variables, InputStream in, long arg2, ComponentLog logger)
+          throws MalformedRecordException, IOException, SchemaNotFoundException {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
         return new RecordReader() {
@@ -105,4 +106,5 @@ public class MockRecordParser extends AbstractControllerService implements Recor
             }
         };
     }
+
 }

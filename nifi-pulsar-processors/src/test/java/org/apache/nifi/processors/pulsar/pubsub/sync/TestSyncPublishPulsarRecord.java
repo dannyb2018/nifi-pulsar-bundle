@@ -38,7 +38,7 @@ public class TestSyncPublishPulsarRecord extends TestPublishPulsarRecord {
     public void pulsarClientExceptionTest() throws PulsarClientException {
        when(mockClientService.getMockProducer().send(Matchers.argThat(new ArgumentMatcher<byte[]>() {
             @Override
-            public boolean matches(Object argument) {
+            public boolean matches(byte[] argument) {
                 return true;
             }
         }))).thenThrow(PulsarClientException.class);

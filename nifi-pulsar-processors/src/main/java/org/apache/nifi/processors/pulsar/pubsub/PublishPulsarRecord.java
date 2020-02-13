@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.TriggerWhenEmpty;
@@ -129,28 +130,26 @@ public class PublishPulsarRecord extends AbstractPulsarProducerProcessor<byte[]>
         final InputStream in = session.read(flowFile);
 
         try {
-            final RecordReader reader = readerFactory.createRecordReader(attributes, in, getLogger());
+            final RecordReader reader = readerFactory.createRecordReader(flowFile, in, getLogger());
             final RecordSet recordSet = reader.createRecordSet();
             final RecordSchema schema = writerFactory.getSchema(attributes, recordSet.getSchema());
             final boolean asyncFlag = (context.getProperty(ASYNC_ENABLED).isSet() && context.getProperty(ASYNC_ENABLED).asBoolean());
 
             try {
                 messagesSent.addAndGet(send(producer, writerFactory, schema, reader, topic, asyncFlag));
+                IOUtils.closeQuietly(in);
                 session.putAttribute(flowFile, MSG_COUNT, messagesSent.get() + "");
                 session.putAttribute(flowFile, TOPIC_NAME, topic);
                 session.adjustCounter("Messages Sent", messagesSent.get(), true);
                 session.getProvenanceReporter().send(flowFile, getPulsarClientService().getPulsarBrokerRootURL(), "Sent " + messagesSent.get() + " records");
                 session.transfer(flowFile, REL_SUCCESS);
             } catch (InterruptedException e) {
-              session.transfer(flowFile, REL_FAILURE);
+                session.transfer(flowFile, REL_FAILURE);
             }
 
         } catch (final SchemaNotFoundException | MalformedRecordException | IOException e) {
+            IOUtils.closeQuietly(in);
             session.transfer(flowFile, REL_FAILURE);
-        } finally {
-            try {
-                in.close();
-            } catch (final IOException ioEx) { /* Ignore */ }
         }
     }
 

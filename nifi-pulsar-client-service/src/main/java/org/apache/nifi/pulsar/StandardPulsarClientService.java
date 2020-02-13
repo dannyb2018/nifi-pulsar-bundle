@@ -260,15 +260,15 @@ public class StandardPulsarClientService extends AbstractControllerService imple
                 .enableTcpNoDelay(context.getProperty(USE_TCP_NO_DELAY).asBoolean());
 
         // Configure TLS
-        final PulsarClientAuthenticationService authenticationService = 
-        		context.getProperty(AUTHENTICATION_SERVICE)
-        		.asControllerService(PulsarClientAuthenticationService.class);
+        final PulsarClientAuthenticationService authenticationService =
+             context.getProperty(AUTHENTICATION_SERVICE)
+                .asControllerService(PulsarClientAuthenticationService.class);
 
         if (authenticationService != null) {
             builder = builder.authentication(authenticationService.getAuthentication());
-            
+
             if (StringUtils.isNotBlank(authenticationService.getTlsTrustCertsFilePath())) {
-            	builder = builder.tlsTrustCertsFilePath(authenticationService.getTlsTrustCertsFilePath());
+                builder = builder.tlsTrustCertsFilePath(authenticationService.getTlsTrustCertsFilePath());
                 secure = true;
             }
         }

@@ -215,9 +215,9 @@ public class ConsumePulsarRecord extends AbstractPulsarConsumerProcessor<byte[]>
           return;
        }
 
-       RecordSchema schema = getSchema(readerFactory, messages.get(0));
-       final BlockingQueue<Message<byte[]>> parseFailures = new LinkedBlockingQueue<Message<byte[]>>();
        FlowFile flowFile = session.create();
+       RecordSchema schema = getSchema(flowFile, readerFactory, messages.get(0));
+       final BlockingQueue<Message<byte[]>> parseFailures = new LinkedBlockingQueue<Message<byte[]>>();
        OutputStream rawOut = session.write(flowFile);
        final RecordSetWriter writer = getRecordWriter(writerFactory, schema, rawOut);
 
@@ -235,7 +235,7 @@ public class ConsumePulsarRecord extends AbstractPulsarConsumerProcessor<byte[]>
                messages.forEach(msg ->{
                    final InputStream in = new ByteArrayInputStream(msg.getValue());
                    try {
-                       RecordReader r = readerFactory.createRecordReader(Collections.emptyMap(), in, getLogger());
+                       RecordReader r = readerFactory.createRecordReader(flowFile, in, getLogger());
                        for (Record record = r.nextRecord(); record != null; record = r.nextRecord()) {
                           writer.write(record);
                        }
@@ -320,13 +320,13 @@ public class ConsumePulsarRecord extends AbstractPulsarConsumerProcessor<byte[]>
         }
     }
 
-    private RecordSchema getSchema(RecordReaderFactory readerFactory, Message<byte[]> msg) {
+    private RecordSchema getSchema(FlowFile flowFile, RecordReaderFactory readerFactory, Message<byte[]> msg) {
         RecordSchema schema = null;
         InputStream in = null;
 
         try {
             in = new ByteArrayInputStream(msg.getValue());
-            schema = readerFactory.createRecordReader(Collections.emptyMap(), in, getLogger()).getSchema();
+            schema = readerFactory.createRecordReader(flowFile, in, getLogger()).getSchema();
         } catch (MalformedRecordException | IOException | SchemaNotFoundException e) {
            return null;
         } finally {

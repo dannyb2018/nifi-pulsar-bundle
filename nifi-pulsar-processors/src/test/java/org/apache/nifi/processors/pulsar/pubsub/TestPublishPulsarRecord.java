@@ -81,7 +81,7 @@ public class TestPublishPulsarRecord extends AbstractPulsarProcessorTest<byte[]>
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put(AbstractPulsarProducerProcessor.TOPIC.getName(), "");
 
-        runner.enqueue(content.getBytes("UTF-8"), attributes );
+        runner.enqueue(content.getBytes("UTF-8"), attributes);
         runner.run();
         runner.assertAllFlowFilesTransferred(PublishPulsarRecord.REL_FAILURE);
 
@@ -97,7 +97,7 @@ public class TestPublishPulsarRecord extends AbstractPulsarProcessorTest<byte[]>
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("topic", TOPIC_NAME);
 
-        runner.enqueue(content.getBytes("UTF-8"), attributes );
+        runner.enqueue(content.getBytes("UTF-8"), attributes);
         runner.run();
         runner.assertAllFlowFilesTransferred(PublishPulsarRecord.REL_SUCCESS);
 
